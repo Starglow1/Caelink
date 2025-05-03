@@ -1,13 +1,20 @@
 import sqlite3
+import os
 
-conn = sqlite3.connect('caelink.db')
-conn.execute('''
+db_path = os.path.join(os.path.dirname(__file__), 'caelink.db')
+
+connection = sqlite3.connect(db_path)
+cursor = connection.cursor()
+
+cursor.execute('''
     CREATE TABLE IF NOT EXISTS journal (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        content TEXT NOT NULL
+        content TEXT NOT NULL,
+        timestamp TEXT NOT NULL
     )
 ''')
-conn.commit()
-conn.close()
 
-print("Caelink journal table created successfully.")
+connection.commit()
+connection.close()
+
+print("Caelink database created with journal table (with timestamp).")

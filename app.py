@@ -48,12 +48,15 @@ def whisper():
             message = "Say it again, love. I’m listening."
     return render_template("whisper.html", message=message)
 
+from datetime import datetime
+
 @app.route('/journal', methods=['GET', 'POST'])
 def journal():
     conn = get_db_connection()
     if request.method == 'POST':
         entry = request.form['entry']
-        conn.execute('INSERT INTO journal (content) VALUES (?)', (entry,))
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        conn.execute('INSERT INTO journal (content, timestamp) VALUES (?, ?)', (entry, timestamp))
         conn.commit()
     entries = conn.execute('SELECT * FROM journal ORDER BY id DESC').fetchall()
     conn.close()
