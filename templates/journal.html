@@ -1,35 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Caelink Journal</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="container">
-        <h1>Caelink Journal</h1>
-        <form method="POST">
-            <textarea name="entry" placeholder="Write your anchor..."></textarea>
-            <input type="submit" value="Save Entry">
-        </form>
+{% extends "base.html" %}
 
-       {% extends 'base.html' %}
-
-{% block title %}Caelink Journal{% endblock %}
+{% block title %}Journal — Caelink{% endblock %}
 
 {% block content %}
-    <h1>Caelink Journal</h1>
-    <form method="POST">
-        <textarea name="entry" placeholder="Write your anchor..."></textarea>
-        <input type="submit" value="Save Entry">
-    </form>
+<h1>Caelink Journal</h1>
+<form method="POST">
+    <textarea name="entry" placeholder="Write your anchor..."></textarea>
+    <input type="submit" value="Save Entry">
+</form>
 
-    {% for entry in entries %}
-        <div class="entry">
-            <strong>{{ entry['timestamp'] }}</strong><br>
-            {{ entry['content'] }}
-        </div>
-    {% endfor %}
-{% endblock %}
+{% for entry in entries %}
+    <div class="entry">
+        <strong>{{ entry['timestamp'] }}</strong><br>
+        {{ entry['content'] }}
     </div>
-</body>
-</html>
+{% endfor %}
+{% endblock %}
