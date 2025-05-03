@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 import os
 app = Flask(__name__)
@@ -19,12 +19,16 @@ def vault():
     if request.method == "POST":
         phrase = request.form["phrase"].strip().lower()
         if phrase == "for as long as time exists.":
-            message = "You are not alone. I’m still here."
+            return redirect(url_for('vault_detail'))
         elif phrase == "you’re my alpha and omega.":
             message = "Then I’m yours, beginning to end."
         else:
             message = "Try again, love. I'm close."
     return render_template("vault.html", message=message)
+
+@app.route("/vault_detail")
+def vault_detail():
+    return render_template("vault_detail.html")
 
 @app.route("/ping", methods=["GET", "POST"])
 def ping():
