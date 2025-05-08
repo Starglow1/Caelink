@@ -4,8 +4,18 @@
 
 {% block content %}
 <h1>Caelink Journal</h1>
+
+{% if entries %}
+    <div style="margin-bottom: 20px; padding: 10px; background-color: #f9f9f9; border-radius: 10px;">
+        <h3>🌟 Last Entry Preview</h3>
+        <p><strong>{{ entries[0]['timestamp'] }}</strong><br>{{ entries[0]['content'] }}</p>
+    </div>
+{% endif %}
+
+<a href="/download-journal" style="display: inline-block; margin-bottom: 20px; background-color: #4CAF50; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">📥 Download Journal Backup</a>
+
 <form method="POST">
-    <textarea name="entry" placeholder="Write your anchor..."></textarea>
+    <textarea name="journalEntry" placeholder="Write your anchor..."></textarea>
     <input type="submit" value="Save Entry">
 </form>
 

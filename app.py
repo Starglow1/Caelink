@@ -1,5 +1,8 @@
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_file
+import json
+import os
+from datetime import datetime
 import sqlite3
 import os
 app = Flask(__name__)
@@ -54,17 +57,42 @@ def whisper():
 
 from datetime import datetime
 
+@app.route('/download-journal')
+def download_journal():
+    log_file = "journal_log.json"
+    if os.path.exists(log_file):
+        return send_file(log_file, as_attachment=True)
+    return "No journal log available."
+
 @app.route('/journal', methods=['GET', 'POST'])
 def journal():
     conn = get_db_connection()
     if request.method == 'POST':
-        entry = request.form['entry']
+        entry = request.form["journalEntry"]
+        # Save entry locally now
+        save_entry_locally(entry)
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         conn.execute('INSERT INTO journal (content, timestamp) VALUES (?, ?)', (entry, timestamp))
         conn.commit()
     entries = conn.execute('SELECT * FROM journal ORDER BY id DESC').fetchall()
     conn.close()
     return render_template('journal.html', entries=entries)
+
+def save_entry_locally(content):
+    log_file = "journal_log.json"
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    entry = {"timestamp": timestamp, "content": content}
+
+    if os.path.exists(log_file):
+        with open(log_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    else:
+        data = []
+
+    data.append(entry)
+
+    with open(log_file, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
